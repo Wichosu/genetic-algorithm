@@ -1,13 +1,13 @@
-import random
 import producto
 import crusar_genes
+import mutar_genes
 # definir los parámetros del algoritmo genético
 
 tam_poblacion = 4
 
 prob_mutacion = 0.1  #10% de probabilidad como prueba
 
-generaciones = 50 #Número de generaciones a probar
+generaciones = 10 #Número de generaciones a probar
 
 
 # definir la capacidad de la mochila
@@ -107,9 +107,9 @@ sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], rev
 
 #alas de genes, la mejor el indice 0 y la peor indice 3
 alas = {
-    "1": {},
-    "2": {},
-    "3": {}
+    "1": [],
+    "2": [],
+    "3": []
 } 
 
 key_alas = 1
@@ -118,27 +118,27 @@ for mejor in sorted_promedios.items():
     if key_alas >= 4:
         break
 
-    alas.update({str(key_alas): {mejor[0] : poblacion[mejor[0]]}})
+    alas.update({str(key_alas): poblacion[mejor[0]]})
     key_alas += 1
 
-print(alas)
-
-#print(poblacion)
 poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
-#print(poblacion)
+
+print(poblacion)
+mutar_genes.mutar_genes(poblacion, prob_mutacion)
+print(poblacion)
 
 #Pseudocodigo
 # Obtener total de calorias y peso DONE
 # Obtener promedio para saber cual conejo tiene mejor fitness usando diccionarios DONE
 # Comparar total de cada conejo con los parametros establecidos DONE
 # Catalogar los conejos segun el que se haya acercada mas a los parametros DONE
-# Hacer la seleccion fitness ej:
+# Hacer la seleccion fitness ej: DONE
 # 1 n n n n n n n n
 # 2 n n n n n n n n
 # -----------------
 # 2 n n n n n n n n
 # 3 n n n n n n n n
-# Hacer el cruce a la seleccion
+# Hacer el cruce a la seleccion DONE
 # 1 n n n n 2n 2n 2n 2n
 # 2 n n n n 1n 1n 1n 1n
 # ----------------------

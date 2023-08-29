@@ -1,5 +1,4 @@
 def crusar_genes(ala1: list, ala2: list, ala3: list) -> dict:
-    print(ala1)
     nuevo_conejo1 = ala1.copy() 
     nuevo_conejo2 = ala2.copy() 
     nuevo_conejo3 = ala2.copy()
