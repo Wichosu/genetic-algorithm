@@ -124,7 +124,7 @@ for mejor in sorted_promedios.items():
 print(alas)
 
 #print(poblacion)
-#poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
+poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
 #print(poblacion)
 
 #Pseudocodigo
