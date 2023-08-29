@@ -1,5 +1,6 @@
 import random
 import producto
+import crusar_genes
 # definir los parámetros del algoritmo genético
 
 tam_poblacion = 4
@@ -61,31 +62,76 @@ poblacion = {
 
 #array para comparar fitness
 #la posicion de conejos va conectada con los indices del array 
-fitness_calorias = []
-fitness_peso = []
+fitness_calorias = {} 
+fitness_peso = {}
 
-for conejo in poblacion.values():
-    print(conejo)
+for conejo in poblacion.items():
     indice = 0
     calorias_total = 0
     peso_total = 0
 
-    for producto in conejo:
+    for producto in conejo[1]:
         if producto:
             calorias_total += cal[indice]
             peso_total += peso[indice]
         indice += 1
-    fitness_calorias.append(abs(calorias_total - lim_cal))
-    fitness_peso.append(abs(peso_total - lim_peso))
 
+    fitness_calorias.update({conejo[0]: abs(calorias_total - lim_cal)})
+    fitness_peso.update({conejo[0]: abs(peso_total - lim_peso)})
 
-print(fitness_peso)
-print(fitness_calorias)
+#Ordenar conejor por mejor caloria y mejor peso
+sorted_fitness_calorias = dict(sorted(fitness_calorias.items(), key=lambda item: item[1]))
+sorted_fitness_peso = dict(sorted(fitness_peso.items(), key=lambda item: item[1]))
+
+promedios = {
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
+}
+
+#Otorgar puntuaciones segun mejores calorias
+puntuacion = 1
+for conejo in sorted_fitness_calorias.items():
+    promedios[conejo[0]] += puntuacion
+    puntuacion /= 2
+
+#Otorgar puntuaciones segun mejores pesos
+puntuacion = 1
+for conejo in sorted_fitness_peso.items():
+    promedios[conejo[0]] += puntuacion
+    puntuacion /= 2
+
+#Mejores promedios iniciando con el mas alto
+sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
+
+#alas de genes, la mejor el indice 0 y la peor indice 3
+alas = {
+    "1": {},
+    "2": {},
+    "3": {}
+} 
+
+key_alas = 1
+#Asignar a ramas o alas para hacer el cruce
+for mejor in sorted_promedios.items():
+    if key_alas >= 4:
+        break
+
+    alas.update({str(key_alas): {mejor[0] : poblacion[mejor[0]]}})
+    key_alas += 1
+
+print(alas)
+
+#print(poblacion)
+#poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
+#print(poblacion)
 
 #Pseudocodigo
 # Obtener total de calorias y peso DONE
-# Comparar total de cada conejo con los parametros establecidos DOING
-# Catalogar los conejos segun el que se haya acercada mas a los parametros
+# Obtener promedio para saber cual conejo tiene mejor fitness usando diccionarios DONE
+# Comparar total de cada conejo con los parametros establecidos DONE
+# Catalogar los conejos segun el que se haya acercada mas a los parametros DONE
 # Hacer la seleccion fitness ej:
 # 1 n n n n n n n n
 # 2 n n n n n n n n
