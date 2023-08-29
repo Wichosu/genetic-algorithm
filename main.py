@@ -62,96 +62,100 @@ poblacion = {
 
 #array para comparar fitness
 #la posicion de conejos va conectada con los indices del array 
-fitness_calorias = {} 
-fitness_peso = {}
+for generar in range(0, generaciones):
+    print(f"Generarcion {generar}: ")
+    print(poblacion)
 
-for conejo in poblacion.items():
-    indice = 0
-    calorias_total = 0
-    peso_total = 0
+    fitness_calorias = {} 
+    fitness_peso = {}
+    
+    for conejo in poblacion.items():
+        indice = 0
+        calorias_total = 0
+        peso_total = 0
+    
+        for producto in conejo[1]:
+            if producto:
+                calorias_total += cal[indice]
+                peso_total += peso[indice]
+            indice += 1
+    
+        fitness_calorias.update({conejo[0]: abs(calorias_total - lim_cal)})
+        fitness_peso.update({conejo[0]: abs(peso_total - lim_peso)})
+    
+    #Ordenar conejor por mejor caloria y mejor peso
+    sorted_fitness_calorias = dict(sorted(fitness_calorias.items(), key=lambda item: item[1]))
+    sorted_fitness_peso = dict(sorted(fitness_peso.items(), key=lambda item: item[1]))
 
-    for producto in conejo[1]:
-        if producto:
-            calorias_total += cal[indice]
-            peso_total += peso[indice]
-        indice += 1
-
-    fitness_calorias.update({conejo[0]: abs(calorias_total - lim_cal)})
-    fitness_peso.update({conejo[0]: abs(peso_total - lim_peso)})
-
-#Ordenar conejor por mejor caloria y mejor peso
-sorted_fitness_calorias = dict(sorted(fitness_calorias.items(), key=lambda item: item[1]))
-sorted_fitness_peso = dict(sorted(fitness_peso.items(), key=lambda item: item[1]))
-
-promedios = {
-    "1": 0,
-    "2": 0,
-    "3": 0,
-    "4": 0
-}
-
-#Otorgar puntuaciones segun mejores calorias
-puntuacion = 1
-for conejo in sorted_fitness_calorias.items():
-    promedios[conejo[0]] += puntuacion
-    puntuacion /= 2
-
-#Otorgar puntuaciones segun mejores pesos
-puntuacion = 1
-for conejo in sorted_fitness_peso.items():
-    promedios[conejo[0]] += puntuacion
-    puntuacion /= 2
-
-#Mejores promedios iniciando con el mas alto
-sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
-
-#alas de genes, la mejor el indice 0 y la peor indice 3
-alas = {
-    "1": [],
-    "2": [],
-    "3": []
-} 
-
-key_alas = 1
-#Asignar a ramas o alas para hacer el cruce
-for mejor in sorted_promedios.items():
-    if key_alas >= 4:
-        break
-
-    alas.update({str(key_alas): poblacion[mejor[0]]})
-    key_alas += 1
-
-poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
-
-print(poblacion)
-mutar_genes.mutar_genes(poblacion, prob_mutacion)
-print(poblacion)
-
-#Pseudocodigo
-# Obtener total de calorias y peso DONE
-# Obtener promedio para saber cual conejo tiene mejor fitness usando diccionarios DONE
-# Comparar total de cada conejo con los parametros establecidos DONE
-# Catalogar los conejos segun el que se haya acercada mas a los parametros DONE
-# Hacer la seleccion fitness ej: DONE
-# 1 n n n n n n n n
-# 2 n n n n n n n n
-# -----------------
-# 2 n n n n n n n n
-# 3 n n n n n n n n
-# Hacer el cruce a la seleccion DONE
-# 1 n n n n 2n 2n 2n 2n
-# 2 n n n n 1n 1n 1n 1n
-# ----------------------
-# 2 n n n n 3n 3n 3n 3n
-# 3 n n n n 2n 2n 2n 2n
-#Hacer la mutacion aleatoria
-# La mutacion invierte el valor de una columna
-#Repetir el proceso
-# imprimir los arreglos de cada generacion para ver resultados
-#
-# for poblacion as conejo
-#      indice = 0
-#      for conejo as caloria
-#          if caloria = 1 
-#              
-#              agarrar valor de caloria y sumarlo
+    print("Mejor caloria de la generacion: " + sorted_fitness_calorias)
+    
+    promedios = {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0
+    }
+    
+    #Otorgar puntuaciones segun mejores calorias
+    puntuacion = 1
+    for conejo in sorted_fitness_calorias.items():
+        promedios[conejo[0]] += puntuacion
+        puntuacion /= 2
+    
+    #Otorgar puntuaciones segun mejores pesos
+    puntuacion = 1
+    for conejo in sorted_fitness_peso.items():
+        promedios[conejo[0]] += puntuacion
+        puntuacion /= 2
+    
+    #Mejores promedios iniciando con el mas alto
+    sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
+    
+    #alas de genes, la mejor el indice 0 y la peor indice 3
+    alas = {
+        "1": [],
+        "2": [],
+        "3": []
+    } 
+    
+    key_alas = 1
+    #Asignar a ramas o alas para hacer el cruce
+    for mejor in sorted_promedios.items():
+        if key_alas >= 4:
+            break
+    
+        alas.update({str(key_alas): poblacion[mejor[0]]})
+        key_alas += 1
+    
+    poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
+    
+    mutar_genes.mutar_genes(poblacion, prob_mutacion)
+    
+    #Pseudocodigo
+    # Obtener total de calorias y peso DONE
+    # Obtener promedio para saber cual conejo tiene mejor fitness usando diccionarios DONE
+    # Comparar total de cada conejo con los parametros establecidos DONE
+    # Catalogar los conejos segun el que se haya acercada mas a los parametros DONE
+    # Hacer la seleccion fitness ej: DONE
+    # 1 n n n n n n n n
+    # 2 n n n n n n n n
+    # -----------------
+    # 2 n n n n n n n n
+    # 3 n n n n n n n n
+    # Hacer el cruce a la seleccion DONE
+    # 1 n n n n 2n 2n 2n 2n
+    # 2 n n n n 1n 1n 1n 1n
+    # ----------------------
+    # 2 n n n n 3n 3n 3n 3n
+    # 3 n n n n 2n 2n 2n 2n
+    #Hacer la mutacion aleatoria
+    # La mutacion invierte el valor de una columna
+    #Repetir el proceso
+    # imprimir los arreglos de cada generacion para ver resultados
+    #
+    # for poblacion as conejo
+    #      indice = 0
+    #      for conejo as caloria
+    #          if caloria = 1 
+    #              
+    #              agarrar valor de caloria y sumarlo
