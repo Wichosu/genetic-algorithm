@@ -28,9 +28,9 @@ productos = [
     producto.Producto("Palomitas", 400, 0.6)
 ]
 
-#cal = [500, 300, 250, 20, 200, 500, 180, 400]
+cal = [500, 300, 250, 20, 200, 500, 180, 400]
 
-#peso = [0.7, 0.2, 0.8, 0.2, 0.6, 0.9, 0.6, 0.6]
+peso = [0.7, 0.2, 0.8, 0.2, 0.6, 0.9, 0.6, 0.6]
 
 #lista_prod = pd.DataFrame ({"Cal":cal, "Peso":peso},index=["Coca-cola", "Pan", "Atún", "Agua", 
 # "Chocolate", "Papitas", "Fruta", "Palomitas"])
@@ -52,14 +52,20 @@ conejito4 = [0, 1, 1, 0, 1, 1, 0, 1]
 #poblacion = [random.choices([0, 1], k=len(peso)) for i in range(tam_poblacion)]
 
 #poblacion fija para pruebas
-poblacion = [conejito1, conejito2, conejito3, conejito4]
+poblacion = {
+    "1": conejito1,
+    "2": conejito2,
+    "3": conejito3,
+    "4": conejito4
+}
 
 #array para comparar fitness
 #la posicion de conejos va conectada con los indices del array 
 fitness_calorias = []
 fitness_peso = []
 
-for conejo in poblacion:
+for conejo in poblacion.values():
+    print(conejo)
     indice = 0
     calorias_total = 0
     peso_total = 0
@@ -69,12 +75,10 @@ for conejo in poblacion:
             calorias_total += cal[indice]
             peso_total += peso[indice]
         indice += 1
-    fitness_calorias.append(calorias_total)
-    fitness_peso.append(peso_total)
+    fitness_calorias.append(abs(calorias_total - lim_cal))
+    fitness_peso.append(abs(peso_total - lim_peso))
 
 
-fitness_peso.sort()
-fitness_calorias.sort()
 print(fitness_peso)
 print(fitness_calorias)
 
