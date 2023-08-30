@@ -1,18 +1,26 @@
 import random
-import crusar_genes
-import mutar_genes
+import lib.crusar_genes as crusar_genes
+import lib.mutar_genes as mutar_genes
 import datetime
-import fitness
-import promedio
-import arn
-import escribir_generacion
+import lib.fitness as fitness
+import lib.promedio as promedio
+import lib.arn as arn
+import lib.escribir_generacion as escribir_generacion
+#TODO 
+#Improve point system
+#If conejo.peso < lim_peso +1 point
+#Else +0 point
+#if conejo.cal > lim_cal +1 point
+#else +0 point
+#one dic to store the points
+#and then get arn form that new dic
 
 # definir los parámetros del algoritmo genético
 tam_poblacion = 4
 
 prob_mutacion = 0.1  #10% de probabilidad como prueba
 
-generaciones = 5 #Número de generaciones a probar
+generaciones = 50 #Número de generaciones a probar
 
 # definir la capacidad de la mochila
 lim_cal = 1200
@@ -31,7 +39,7 @@ for i in range(1, tam_poblacion + 1):
     poblacion.update({ str(i): random.choices([0, 1], k=len(peso))})
 
 #archivo para logs
-archivo = open(f"Generacion {datetime.datetime.now()}", "w")
+archivo = open(f"./logs/Generacion {datetime.datetime.now()}", "w")
 
 for generacion in range(0, generaciones):
 
