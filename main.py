@@ -45,10 +45,10 @@ for generacion in range(0, generaciones):
 
     #Obtener conejos con resultados mas cercanos a los parametros establecidos
     #Se encuentran ordenados del mas cercano al mas lejano
-    resultado_calorias, resultado_peso = fitness.fitness(poblacion, cal, peso, lim_cal, lim_peso)
+    resultado_calorias, resultado_peso, resultado_rango = fitness.fitness(poblacion, cal, peso, lim_cal, lim_peso)
 
     #Asignar promedio para determinar el mejor conejo de la poblacion
-    promedios = promedio.calificar_fitness(resultado_calorias, resultado_peso)
+    promedios = promedio.calificar_fitness(resultado_calorias, resultado_peso, resultado_rango)
 
     #Obtener el array de los mejores conejos de la poblacion
     arn_resultante = arn.obtener_arn(poblacion, promedios)

@@ -1,4 +1,4 @@
-def calificar_fitness(resultado_calorias: dict, resultado_peso: dict) -> dict:
+def calificar_fitness(resultado_calorias: dict, resultado_peso: dict, resultado_rango: dict) -> dict:
     promedios = {
         "1": 0,
         "2": 0,
@@ -17,6 +17,10 @@ def calificar_fitness(resultado_calorias: dict, resultado_peso: dict) -> dict:
     for key, value in resultado_peso.items():
         promedios[key] += puntuacion
         puntuacion /= 2
+
+    #Otorgar puntos por estar en los rangos correctos
+    for key, value in resultado_rango.items():
+        promedios[key] += value
 
     #Mejores promedios iniciando con el mas alto
     sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
