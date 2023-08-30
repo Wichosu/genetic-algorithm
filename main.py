@@ -63,6 +63,7 @@ tercer_mejor = {
     "promedio": 0
 }
 
+#archivo para logs
 archivo = open(f"Generacion {datetime.datetime.now()}", "w")
 
 #array para comparar fitness
@@ -191,9 +192,9 @@ for generacion in range(0, generaciones):
     # ----------------------
     # 2 n n n n 3n 3n 3n 3n
     # 3 n n n n 2n 2n 2n 2n
-    #Hacer la mutacion aleatoria
+    #Hacer la mutacion aleatoria DONE
     # La mutacion invierte el valor de una columna
-    #Repetir el proceso
+    #Repetir el proceso DONE
     # imprimir los arreglos de cada generacion para ver resultados
     #
     # for poblacion as conejo
