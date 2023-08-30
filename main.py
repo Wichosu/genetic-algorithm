@@ -29,13 +29,13 @@ peso = [0.7, 0.2, 0.8, 0.2, 0.6, 0.9, 0.6, 0.6]
 
 #Definir población inicial de conejitos
 
-conejito1 = [1, 1, 1, 1, 1, 0, 1, 0]
+#conejito1 = [1, 1, 1, 1, 1, 0, 1, 0]
 
-conejito2 = [0, 1, 0, 0, 1, 1, 0, 1]
+#conejito2 = [0, 1, 0, 0, 1, 1, 0, 1]
 
-conejito3 = [1, 0, 0, 1, 0, 0, 0, 1]
+#conejito3 = [1, 0, 0, 1, 0, 0, 0, 1]
 
-conejito4 = [0, 1, 1, 0, 1, 1, 0, 1]
+#conejito4 = [0, 1, 1, 0, 1, 1, 0, 1]
 
 # crear una población inicial aleatoria
 
@@ -48,8 +48,20 @@ for i in range(1, tam_poblacion + 1):
 #variables par debugear
 mejor_de_la_generacion = {
     "key": 0,
-    "value": []
+    "value": [],
+    "promedio": 0
 } 
+segundo_mejor = {
+    "key": 0,
+    "value": [],
+    "promedio": 0
+}
+
+tercer_mejor = {
+    "key": 0,
+    "value": [],
+    "promedio": 0
+}
 
 archivo = open(f"Generacion {datetime.datetime.now()}", "w")
 
@@ -105,7 +117,13 @@ for generacion in range(0, generaciones):
     sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
 
     mejor_de_la_generacion["key"] = list(sorted_promedios.keys())[0]
+    segundo_mejor["key"] = list(sorted_promedios.keys())[1]
+    tercer_mejor["key"] = list(sorted_promedios.keys())[2]
     
+    mejor_de_la_generacion["promedio"] = list(sorted_promedios.values())[0]
+    segundo_mejor["promedio"] = list(sorted_promedios.values())[1]
+    tercer_mejor["promedio"] = list(sorted_promedios.values())[2]
+
     #alas de genes, la mejor el indice 0 y la peor indice 3
     alas = {
         "1": [],
@@ -123,12 +141,14 @@ for generacion in range(0, generaciones):
         key_alas += 1
 
     mejor_de_la_generacion["value"] = alas["1"]
+    segundo_mejor["value"] = alas["2"]
+    tercer_mejor["value"] = alas["3"]
 
     archivo.write(f"Datos de la generacion {generacion}:\n")
-    print(f"Datos de la generacion {generacion}: ")
+#    print(f"Datos de la generacion {generacion}: ")
 
     archivo.write("{:<8} {:<25} {:<15} {:<10} \n".format('Conejo', 'Array', 'Calorias', 'Peso'))
-    print("{:<8} {:<25} {:<15} {:<10}".format('Conejo', 'Array', 'Calorias', 'Peso'))
+#    print("{:<8} {:<25} {:<15} {:<10}".format('Conejo', 'Array', 'Calorias', 'Peso'))
 
     for key, value in poblacion.items():
         indice = 0
@@ -142,15 +162,17 @@ for generacion in range(0, generaciones):
             indice += 1
 
         archivo.write("{:<8} {:<25} {:<15} {:<10} \n".format(key, str(value), calorias_total, peso_total))
-        print("{:<8} {:<25} {:<15} {:<10}".format(key, str(value), calorias_total, peso_total))
+#        print("{:<8} {:<25} {:<15} {:<10}".format(key, str(value), calorias_total, peso_total))
 
     archivo.write(f"Mejor de la generacion: {mejor_de_la_generacion} \n")
-    print(f"Mejor de la generacion: {mejor_de_la_generacion}")
+    archivo.write(f"Segundo de la generacion: {segundo_mejor} \n")
+    archivo.write(f"Tercero de la generacion: {tercer_mejor} \n")
+#    print(f"Mejor de la generacion: {mejor_de_la_generacion}")
 
     #Cruce y mutacion para la nueva generacion
-    poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
+    poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"], archivo)
     
-    mutar_genes.mutar_genes(poblacion, prob_mutacion)
+    mutar_genes.mutar_genes(poblacion, prob_mutacion, archivo)
     
     #Pseudocodigo
     # Obtener total de calorias y peso DONE
