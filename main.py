@@ -1,7 +1,7 @@
 import random
-import producto
 import crusar_genes
 import mutar_genes
+import datetime
 # definir los parámetros del algoritmo genético
 
 tam_poblacion = 4
@@ -19,17 +19,6 @@ lim_peso = 2
 
 
 # definir la lista de pesos y calorías de los productos
-productos = [
-    producto.Producto("Coca Cola", 500, 0.7),
-    producto.Producto("Pan", 300, 0.2),
-    producto.Producto("Atún", 250, 0.8),
-    producto.Producto("Agua", 20, 0.2),
-    producto.Producto("Chocolate", 200, 0.6),
-    producto.Producto("Papitas", 500, 0.9),
-    producto.Producto("Fruta", 180, 0.6),
-    producto.Producto("Palomitas", 400, 0.6)
-]
-
 cal = [500, 300, 250, 20, 200, 500, 180, 400]
 
 peso = [0.7, 0.2, 0.8, 0.2, 0.6, 0.9, 0.6, 0.6]
@@ -61,6 +50,8 @@ mejor_de_la_generacion = {
     "key": 0,
     "value": []
 } 
+
+archivo = open(f"Generacion {datetime.datetime.now()}", "w")
 
 #array para comparar fitness
 #la posicion de conejos va conectada con los indices del array 
@@ -132,13 +123,11 @@ for generacion in range(0, generaciones):
         key_alas += 1
 
     mejor_de_la_generacion["value"] = alas["1"]
-    
-    poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
-    
-    mutar_genes.mutar_genes(poblacion, prob_mutacion)
 
+    archivo.write(f"Datos de la generacion {generacion}:\n")
     print(f"Datos de la generacion {generacion}: ")
 
+    archivo.write("{:<8} {:<25} {:<15} {:<10} \n".format('Conejo', 'Array', 'Calorias', 'Peso'))
     print("{:<8} {:<25} {:<15} {:<10}".format('Conejo', 'Array', 'Calorias', 'Peso'))
 
     for key, value in poblacion.items():
@@ -152,9 +141,16 @@ for generacion in range(0, generaciones):
                 peso_total += peso[indice]
             indice += 1
 
+        archivo.write("{:<8} {:<25} {:<15} {:<10} \n".format(key, str(value), calorias_total, peso_total))
         print("{:<8} {:<25} {:<15} {:<10}".format(key, str(value), calorias_total, peso_total))
 
+    archivo.write(f"Mejor de la generacion: {mejor_de_la_generacion} \n")
     print(f"Mejor de la generacion: {mejor_de_la_generacion}")
+
+    #Cruce y mutacion para la nueva generacion
+    poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
+    
+    mutar_genes.mutar_genes(poblacion, prob_mutacion)
     
     #Pseudocodigo
     # Obtener total de calorias y peso DONE
