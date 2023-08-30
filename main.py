@@ -1,3 +1,4 @@
+import random
 import producto
 import crusar_genes
 import mutar_genes
@@ -7,7 +8,7 @@ tam_poblacion = 4
 
 prob_mutacion = 0.1  #10% de probabilidad como prueba
 
-generaciones = 10 #Número de generaciones a probar
+generaciones = 50 #Número de generaciones a probar
 
 
 # definir la capacidad de la mochila
@@ -47,25 +48,23 @@ conejito3 = [1, 0, 0, 1, 0, 0, 0, 1]
 
 conejito4 = [0, 1, 1, 0, 1, 1, 0, 1]
 
-
 # crear una población inicial aleatoria
 
 #poblacion = [random.choices([0, 1], k=len(peso)) for i in range(tam_poblacion)]
+poblacion = {}
 
-#poblacion fija para pruebas
-poblacion = {
-    "1": conejito1,
-    "2": conejito2,
-    "3": conejito3,
-    "4": conejito4
-}
+for i in range(1, tam_poblacion + 1):
+    poblacion.update({ str(i): random.choices([0, 1], k=len(peso))})
+
+#variables par debugear
+mejor_de_la_generacion = {
+    "key": 0,
+    "value": []
+} 
 
 #array para comparar fitness
 #la posicion de conejos va conectada con los indices del array 
-for generar in range(0, generaciones):
-    print(f"Generarcion {generar}: ")
-    print(poblacion)
-
+for generacion in range(0, generaciones):
     fitness_calorias = {} 
     fitness_peso = {}
     
@@ -81,14 +80,17 @@ for generar in range(0, generaciones):
             indice += 1
     
         fitness_calorias.update({conejo[0]: abs(calorias_total - lim_cal)})
-        fitness_peso.update({conejo[0]: abs(peso_total - lim_peso)})
+        fitness_peso.update({conejo[0]: abs(lim_peso - peso_total)})
     
     #Ordenar conejor por mejor caloria y mejor peso
     sorted_fitness_calorias = dict(sorted(fitness_calorias.items(), key=lambda item: item[1]))
     sorted_fitness_peso = dict(sorted(fitness_peso.items(), key=lambda item: item[1]))
 
-    print("Mejor caloria de la generacion: " + sorted_fitness_calorias)
-    
+    #Pasar negativos a ultimo lugar
+#    sorted_fitness_calorias = dict(sorted(sorted_fitness_calorias.items(), key=lambda item: item[1] < 0))
+#    sorted_fitness_peso = dict(sorted(sorted_fitness_peso.items(), key=lambda item: item[1] < 0))
+
+
     promedios = {
         "1": 0,
         "2": 0,
@@ -110,6 +112,8 @@ for generar in range(0, generaciones):
     
     #Mejores promedios iniciando con el mas alto
     sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
+
+    mejor_de_la_generacion["key"] = list(sorted_promedios.keys())[0]
     
     #alas de genes, la mejor el indice 0 y la peor indice 3
     alas = {
@@ -126,10 +130,31 @@ for generar in range(0, generaciones):
     
         alas.update({str(key_alas): poblacion[mejor[0]]})
         key_alas += 1
+
+    mejor_de_la_generacion["value"] = alas["1"]
     
     poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"])
     
     mutar_genes.mutar_genes(poblacion, prob_mutacion)
+
+    print(f"Datos de la generacion {generacion}: ")
+
+    print("{:<8} {:<25} {:<15} {:<10}".format('Conejo', 'Array', 'Calorias', 'Peso'))
+
+    for key, value in poblacion.items():
+        indice = 0
+        calorias_total = 0
+        peso_total = 0
+    
+        for producto in value:
+            if producto:
+                calorias_total += cal[indice]
+                peso_total += peso[indice]
+            indice += 1
+
+        print("{:<8} {:<25} {:<15} {:<10}".format(key, str(value), calorias_total, peso_total))
+
+    print(f"Mejor de la generacion: {mejor_de_la_generacion}")
     
     #Pseudocodigo
     # Obtener total de calorias y peso DONE
