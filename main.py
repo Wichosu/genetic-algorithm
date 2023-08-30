@@ -2,13 +2,16 @@ import random
 import crusar_genes
 import mutar_genes
 import datetime
+import fitness
+import promedio
+import arn
 # definir los parámetros del algoritmo genético
 
 tam_poblacion = 4
 
 prob_mutacion = 0.1  #10% de probabilidad como prueba
 
-generaciones = 50 #Número de generaciones a probar
+generaciones = 5 #Número de generaciones a probar
 
 
 # definir la capacidad de la mochila
@@ -69,81 +72,28 @@ archivo = open(f"Generacion {datetime.datetime.now()}", "w")
 #array para comparar fitness
 #la posicion de conejos va conectada con los indices del array 
 for generacion in range(0, generaciones):
-    fitness_calorias = {} 
-    fitness_peso = {}
-    
-    for conejo in poblacion.items():
-        indice = 0
-        calorias_total = 0
-        peso_total = 0
-    
-        for producto in conejo[1]:
-            if producto:
-                calorias_total += cal[indice]
-                peso_total += peso[indice]
-            indice += 1
-    
-        fitness_calorias.update({conejo[0]: abs(calorias_total - lim_cal)})
-        fitness_peso.update({conejo[0]: abs(lim_peso - peso_total)})
-    
-    #Ordenar conejor por mejor caloria y mejor peso
-    sorted_fitness_calorias = dict(sorted(fitness_calorias.items(), key=lambda item: item[1]))
-    sorted_fitness_peso = dict(sorted(fitness_peso.items(), key=lambda item: item[1]))
 
-    #Pasar negativos a ultimo lugar
-#    sorted_fitness_calorias = dict(sorted(sorted_fitness_calorias.items(), key=lambda item: item[1] < 0))
-#    sorted_fitness_peso = dict(sorted(sorted_fitness_peso.items(), key=lambda item: item[1] < 0))
+    #Obtener conejos con resultados mas cercanos a los parametros establecidos
+    #Se encuentran ordenados del mas cercano al mas lejano
+    resultado_calorias, resultado_peso = fitness.fitness(poblacion, cal, peso, lim_cal, lim_peso)
 
+    #Asignar promedio para determinar el mejor conejo de la poblacion
+    promedios = promedio.calificar_fitness(resultado_calorias, resultado_peso)
 
-    promedios = {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0
-    }
+    mejor_de_la_generacion["key"] = list(promedios.keys())[0]
+    segundo_mejor["key"] = list(promedios.keys())[1]
+    tercer_mejor["key"] = list(promedios.keys())[2]
     
-    #Otorgar puntuaciones segun mejores calorias
-    puntuacion = 1
-    for conejo in sorted_fitness_calorias.items():
-        promedios[conejo[0]] += puntuacion
-        puntuacion /= 2
-    
-    #Otorgar puntuaciones segun mejores pesos
-    puntuacion = 1
-    for conejo in sorted_fitness_peso.items():
-        promedios[conejo[0]] += puntuacion
-        puntuacion /= 2
-    
-    #Mejores promedios iniciando con el mas alto
-    sorted_promedios = dict(sorted(promedios.items(), key=lambda item : item[1], reverse=True))
+    mejor_de_la_generacion["promedio"] = list(promedios.values())[0]
+    segundo_mejor["promedio"] = list(promedios.values())[1]
+    tercer_mejor["promedio"] = list(promedios.values())[2]
 
-    mejor_de_la_generacion["key"] = list(sorted_promedios.keys())[0]
-    segundo_mejor["key"] = list(sorted_promedios.keys())[1]
-    tercer_mejor["key"] = list(sorted_promedios.keys())[2]
-    
-    mejor_de_la_generacion["promedio"] = list(sorted_promedios.values())[0]
-    segundo_mejor["promedio"] = list(sorted_promedios.values())[1]
-    tercer_mejor["promedio"] = list(sorted_promedios.values())[2]
+    #Obtener el array de los mejores conejos de la poblacion
+    arn_resultante = arn.obtener_arn(poblacion, promedios)
 
-    #alas de genes, la mejor el indice 0 y la peor indice 3
-    alas = {
-        "1": [],
-        "2": [],
-        "3": []
-    } 
-    
-    key_alas = 1
-    #Asignar a ramas o alas para hacer el cruce
-    for mejor in sorted_promedios.items():
-        if key_alas >= 4:
-            break
-    
-        alas.update({str(key_alas): poblacion[mejor[0]]})
-        key_alas += 1
-
-    mejor_de_la_generacion["value"] = alas["1"]
-    segundo_mejor["value"] = alas["2"]
-    tercer_mejor["value"] = alas["3"]
+    mejor_de_la_generacion["value"] = arn_resultante["1"]
+    segundo_mejor["value"] = arn_resultante["2"]
+    tercer_mejor["value"] = arn_resultante["3"]
 
     archivo.write(f"Datos de la generacion {generacion}:\n")
 #    print(f"Datos de la generacion {generacion}: ")
@@ -171,7 +121,7 @@ for generacion in range(0, generaciones):
 #    print(f"Mejor de la generacion: {mejor_de_la_generacion}")
 
     #Cruce y mutacion para la nueva generacion
-    poblacion = crusar_genes.crusar_genes(alas["1"], alas["2"], alas["3"], archivo)
+    poblacion = crusar_genes.crusar_genes(arn_resultante["1"], arn_resultante["2"], arn_resultante["3"], archivo)
     
     mutar_genes.mutar_genes(poblacion, prob_mutacion, archivo)
     
