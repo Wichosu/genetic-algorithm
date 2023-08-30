@@ -8,11 +8,11 @@ def obtener_arn(poblacion: dict, promedios: dict) -> dict:
     
     key_arn = 1
     #Asignar a ramas o arn para hacer el cruce
-    for mejor in promedios.items():
+    for key, value in promedios.items():
         if key_arn >= 4:
             break
     
-        arn.update({str(key_arn): poblacion[mejor[0]]})
+        arn.update({str(key_arn): poblacion[key]})
         key_arn += 1
 
     return arn
