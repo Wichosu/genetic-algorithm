@@ -25,23 +25,30 @@ def escribir_generacion(
         "promedio": 0
     }
 
+#lista_prod = pd.DataFrame ({"Cal":cal, "Peso":peso},index=["Coca-cola", "Pan", "Atún", "Agua", 
+# "Chocolate", "Papitas", "Fruta", "Palomitas"])
+
+    nombres = ["Coca-Cola", "Pan", "Atún", "Agua", "Chocolate", "Papitas", "Fruta", "Palomitas"]
+
     #Encabezado de la generacion
     archivo.write(f"Datos de la generacion {generacion}:\n")
-    archivo.write("{:<8} {:<25} {:<15} {:<10} \n".format('Conejo', 'Array', 'Calorias', 'Peso'))
+    archivo.write("{:<8} {:<25} {:<15} {:<10} {:<45} \n".format('Conejo', 'Array', 'Calorias', 'Peso', 'Productos'))
 
     #Imprimir resultados de fitness de cada conejo
     for key, value in poblacion.items():
         indice = 0
         calorias_total = 0
         peso_total = 0
+        nombres_total = []
     
         for producto in value:
             if producto:
                 calorias_total += cal[indice]
                 peso_total += peso[indice]
+                nombres_total.append(nombres[indice])
             indice += 1
 
-        archivo.write("{:<8} {:<25} {:<15} {:<10} \n".format(key, str(value), calorias_total, peso_total))
+        archivo.write("{:<8} {:<25} {:<15} {:<10} {:<45} \n".format(key, str(value), calorias_total, peso_total, str(nombres_total)))
 
     #Obtener llave de conejo con mejor promedio
     mejor_de_la_generacion["key"] = list(promedios.keys())[0]
